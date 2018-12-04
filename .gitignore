@@ -1,0 +1,10 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/packages
+/WebBcpUi/bin
+/WebBcpService/bin
+/WebBcpModel/obj/Debug
+/WebBcpService/obj/Debug
+/WebBcpUi/obj/Debug

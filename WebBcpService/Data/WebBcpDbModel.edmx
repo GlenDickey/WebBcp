@@ -1,0 +1,139 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="WebBcpDbModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="BcpColumnFormat">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="BcpTableFormatId" Type="int" Nullable="false" />
+          <Property Name="FromColumnName" Type="nvarchar" MaxLength="250" Nullable="false" />
+          <Property Name="ToColumnName" Type="nvarchar" MaxLength="250" Nullable="false" />
+          <Property Name="ToDataType" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Sequence" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="BcpTableFormat">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__BcpColumn__BcpTa__5D95E53A">
+          <End Role="BcpTableFormat" Type="Self.BcpTableFormat" Multiplicity="1" />
+          <End Role="BcpColumnFormat" Type="Self.BcpColumnFormat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BcpTableFormat">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="BcpColumnFormat">
+              <PropertyRef Name="BcpTableFormatId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="WebBcpDbModelStoreContainer">
+          <EntitySet Name="BcpColumnFormat" EntityType="Self.BcpColumnFormat" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BcpTableFormat" EntityType="Self.BcpTableFormat" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__BcpColumn__BcpTa__5D95E53A" Association="Self.FK__BcpColumn__BcpTa__5D95E53A">
+            <End Role="BcpTableFormat" EntitySet="BcpTableFormat" />
+            <End Role="BcpColumnFormat" EntitySet="BcpColumnFormat" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="WebBcpDbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="BcpTableFormat">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="BcpColumnFormats" Relationship="WebBcpDbModel.FK__BcpColumn__BcpTa__5D95E53A" FromRole="BcpTableFormat" ToRole="BcpColumnFormat" />
+        </EntityType>
+        <EntityContainer Name="WebBcpDbEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="BcpTableFormats" EntityType="Self.BcpTableFormat" />
+          <EntitySet Name="BcpColumnFormats" EntityType="WebBcpDbModel.BcpColumnFormat" />
+          <AssociationSet Name="FK__BcpColumn__BcpTa__5D95E53A" Association="WebBcpDbModel.FK__BcpColumn__BcpTa__5D95E53A">
+            <End Role="BcpTableFormat" EntitySet="BcpTableFormats" />
+            <End Role="BcpColumnFormat" EntitySet="BcpColumnFormats" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="BcpColumnFormat">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BcpTableFormatId" Type="Int32" Nullable="false" />
+          <Property Name="FromColumnName" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="ToColumnName" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="ToDataType" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Sequence" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="BcpTableFormat" Relationship="WebBcpDbModel.FK__BcpColumn__BcpTa__5D95E53A" FromRole="BcpColumnFormat" ToRole="BcpTableFormat" />
+        </EntityType>
+        <Association Name="FK__BcpColumn__BcpTa__5D95E53A">
+          <End Type="WebBcpDbModel.BcpTableFormat" Role="BcpTableFormat" Multiplicity="1" />
+          <End Type="WebBcpDbModel.BcpColumnFormat" Role="BcpColumnFormat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BcpTableFormat">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="BcpColumnFormat">
+              <PropertyRef Name="BcpTableFormatId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="WebBcpDbModelStoreContainer" CdmEntityContainer="WebBcpDbEntities">
+          <EntitySetMapping Name="BcpTableFormats">
+            <EntityTypeMapping TypeName="WebBcpDbModel.BcpTableFormat">
+              <MappingFragment StoreEntitySet="BcpTableFormat">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BcpColumnFormats">
+            <EntityTypeMapping TypeName="WebBcpDbModel.BcpColumnFormat">
+              <MappingFragment StoreEntitySet="BcpColumnFormat">
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="ToDataType" ColumnName="ToDataType" />
+                <ScalarProperty Name="ToColumnName" ColumnName="ToColumnName" />
+                <ScalarProperty Name="FromColumnName" ColumnName="FromColumnName" />
+                <ScalarProperty Name="BcpTableFormatId" ColumnName="BcpTableFormatId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

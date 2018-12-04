@@ -1,0 +1,217 @@
+﻿@using WebBcpModel
+@model List<NumericIdDupleType>
+@{
+	ViewBag.Title = "Web BCP";
+}
+
+<h1>Web BCP</h1>
+
+<form>
+
+	<div class="form-group">
+		<label for="formatTypeSelect">Select table format</label>
+		<select id="formatTypeSelect" class="form-control" >
+			<option value="">Please select...</option>
+			@{
+				foreach (var f in Model)
+				{
+					<option value="@f.Value">@f.Value</option>
+				}
+			}
+		</select>
+	</div>
+
+	<div class="form-group">
+
+		<label for="optionSelect">Table options</label><br />
+		<select id="optionSelect" class="form-control">
+			<option value="">Please select...</option>
+			<option value="ONE_TABLE">Import all files into one table</option>
+			<option value="INDIVIDUAL_TABLES">Import all files into individual tables</option>
+		</select>
+	</div>
+
+	<div class="form-group">
+		<label for="singleTableName">Single Table Name</label>
+		<input type="text" id="singleTableName" style="width: 100%;" class="form-control" />
+	</div>
+
+	<div class="form-group">
+		<!-- FORM BASED, START -->
+		@*<form id="FormUpload" enctype="multipart/form-data" method="post" action="/Home/Upload" >
+				<input type="file" id="fileUpload" name="fileUpload" multiple />
+				<input type="submit" id="fileUploadButton" value="Upload" />
+			</form>*@
+		<!-- FORM BASED, END-->
+		<!-- HTML 5, START-->
+		<label for="fileUpload">Select files</label>
+		<input type="file" id="fileUpload" name="fileUpload" class="form-control" multiple />
+		<!-- HTML 5, END -->
+	</div>
+
+	<div class="form-group">
+		<label for="results">Results</label>
+		<textarea id="results" class="form-control" rows="10"></textarea>
+	</div>
+
+</form>
+
+<script type="text/javascript">
+	$(document)
+		.ready(
+			function () {
+				// initialize to disabled
+				$("input#fileUpload").prop("disabled", true);
+				$("input#singleTableName").prop("disabled", true);
+
+				function enableSelectFilesControl() {
+					// check if the conditions are right to enable the file upload control
+
+					var selectedFormatType = $("select#formatTypeSelect").val();
+					var selectedOption = $("select#optionSelect").val();
+					var singleTableName = $("input#singleTableName").val();
+
+					if (
+						(selectedFormatType != "" && selectedOption == "ONE_TABLE" && singleTableName != "")
+						|| (selectedFormatType != "" && selectedOption != "ONE_TABLE" && selectedOption != "")
+					) {
+						$("input#fileUpload").prop("disabled", false);
+					} else {
+						$("input#fileUpload").prop("disabled", true);
+					}
+				};
+
+				//#region on selection of both required fields enable the file upload
+
+				$("select#formatTypeSelect")
+					.change(
+						function () {
+							enableSelectFilesControl();
+						}
+					);
+
+				$("select#optionSelect")
+					.change(
+						function () {
+							enableSelectFilesControl();
+
+							var selectedOption = $(this).val();
+
+							if (selectedOption == "ONE_TABLE") {
+								$("input#singleTableName").prop("disabled", false);
+							} else {
+								$("input#singleTableName").val("");
+								$("input#singleTableName").prop("disabled", true);
+							}
+
+						}
+					);
+
+				$("input#singleTableName")
+					.keyup(
+						function () {
+							enableSelectFilesControl();
+						}
+					);
+
+				//#endregion
+
+				//#region HTML 5, START ///////////////////////////////////////////////////////
+
+				$("input#fileUpload")
+					.change(
+						function () {
+							var data = new FormData();
+
+							// add format type to FormData
+							var formatType = $("select#formatTypeSelect").val();
+							data.append("FormatType", formatType);
+
+							// add option to FormData
+							var option = $("select#optionSelect").val();
+							data.append("Option", option);
+
+							// add single table name
+							var singleTableName = $("input#singleTableName").val();
+							data.append("SingleTableName", singleTableName);
+
+							// if files then make ajax call
+							var fileUpload = $("input#fileUpload");
+							var files = fileUpload[0].files;
+
+							if (files.length > 0) {
+
+								// add files to FormData
+								for (var i = 0; i < files.length; i++) {
+									data.append(files[i].name, files[i]);
+								}
+
+								// make the call
+								$.ajax({
+									type: "POST",
+									url: "/Home/Upload",
+									data: data,
+									//dataType: 'json',
+									contentType: false,
+									async: false,
+									processData: false,
+									cache: false,
+									success: function (result) {
+										$("textarea#results").text(result);
+											return false;
+									},
+									error: function (xhr, status, p3, p4) {
+										var errorMsg = "Error " + " " + status + " " + p3 + " " + p4;
+										console.log(errorMsg);
+									}
+								});
+							}
+						}
+					);
+
+				//#endregion HTML 5, END ///////////////////////////////////////////////////////////
+
+				//#region FORM BASED, START ////////////////////////////////////////////////////////////////
+				// if your browser won't support the html 5 file control use this instead
+
+				//$("input#fileUploadButton")
+				//	.onsubmit =
+				//		function () {
+				//			var data = new FormData();
+
+				//			var fileUpload = $("input#fileUpload");
+				//			var files = fileUpload[0].files;
+
+				//			for (var i = 0; i < files.length; i++) {
+				//				data.append(files[i].name, files[i]);
+				//			}
+
+				//			$.ajax({
+				//				type: "POST",
+				//				url: "/Home/Upload",
+				//				data: data,
+				//				//dataType: 'json',
+				//				contentType: false,
+				//				async: false,
+				//				processData: false,
+				//				cache: false,
+				//				success: function (result) {
+				//					alert(result);
+				//					return false;
+				//				},
+				//				error: function (xhr, status, p3, p4) {
+				//					var err = "Error " + " " + status + " " + p3 + " " + p4;
+				//					if (xhr.responseText && xhr.responseText[0] == "{")
+				//						err = JSON.parse(xhr.responseText).Message;
+				//					console.log(err);
+				//				}
+				//			});
+				//		};
+
+				//#endregion FORM BASED, END  ////////////////////////////////////////////////////////////////
+			}
+		);
+
+</script>
+
+

@@ -1,0 +1,5 @@
+9,Baldurs GateCon,Portsmouth,NH,26,500.00
+13,More Politican Grandstanding,Concord,11,NH,2000.00
+22,Even More Politican Grandstanding,Nashua,19,NH,26000.00
+23,Arguing with Trees Seminar,Keene,NH,101,4600.00
+24,Fire Always Makes It Better,New Boston,NH,57,90.00
